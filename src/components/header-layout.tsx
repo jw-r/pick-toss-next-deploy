@@ -16,7 +16,7 @@ const mockData = {
 
 export default function HeaderLayout() {
   return (
-    <div className="flex h-[60px] items-center gap-11">
+    <div className="sticky right-0 top-0 flex h-[60px] w-full items-center gap-11 bg-gray-01">
       <div className="flex flex-1 items-center justify-end gap-6">
         <div className="flex max-w-[360px] flex-1 items-center gap-4 rounded-full bg-gray-02 px-8 py-3">
           <Image src="/icons/search.svg" alt="search" width={16} height={16} />

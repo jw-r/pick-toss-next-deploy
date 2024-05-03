@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <LeftNavLayout>
-      <div className="mx-auto w-full max-w-[1440px] px-20">
+      <div className="relative mx-auto w-full max-w-[calc(1032px+40px)] px-[20px]">
         <HeaderLayout />
         {children}
       </div>
