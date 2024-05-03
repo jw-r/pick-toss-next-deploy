@@ -23,45 +23,170 @@ const config = {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
       fontSize: {
-        'page-title': [
-          '32px',
+        h1: [
+          '36px',
           {
+            lineHeight: 'normal',
             fontWeight: 'bold',
-            lineHeight: '-2%',
+            letterSpacing: '0.02em',
           },
         ],
-        'folder-name': [
+        'h2-bold': [
+          '32px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'h2-medium': [
+          '36px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'medium',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'h3-bold': [
+          '24px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'h3-medium': [
+          '24px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'medium',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'h4-bold': [
           '20px',
           {
-            fontWeight: 'medium',
-            lineHeight: '-2%',
+            lineHeight: 'normal',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
           },
         ],
         button: [
           '16px',
           {
+            lineHeight: 'normal',
             fontWeight: 'bold',
-            lineHeight: '0%',
+            letterSpacing: '0.02em',
           },
         ],
-        'gnb-name': [
+        'body1-bold': [
+          '16px',
+          {
+            lineHeight: '120%',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body1-bold-eng': [
+          '16px',
+          {
+            lineHeight: '120%',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body1-medium': [
+          '16px',
+          {
+            lineHeight: '120%',
+            fontWeight: 'medium',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body2-bold': [
           '14px',
           {
+            lineHeight: '120%',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body2-medium': [
+          '14px',
+          {
+            lineHeight: '120%',
             fontWeight: 'medium',
-            lineHeight: '-2%',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body2-regular': [
+          '14px',
+          {
+            lineHeight: '120%',
+            fontWeight: 'regular',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'body2-regular-eng': [
+          '14px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'regular',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'text-medium': [
+          '14px',
+          {
+            lineHeight: '150%',
+            fontWeight: 'medium',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'text-regular': [
+          '14px',
+          {
+            lineHeight: '150%',
+            fontWeight: 'regular',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'small1-bold': [
+          '12px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          },
+        ],
+        'small1-regular': [
+          '12px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'regular',
+            letterSpacing: '0.02em',
+          },
+        ],
+        tag: [
+          '10px',
+          {
+            lineHeight: 'normal',
+            fontWeight: 'regular',
+            letterSpacing: '0.02em',
           },
         ],
       },
       colors: {
+        white: '#FFFFFF',
         gray: {
           '01': '#F6FAFD',
           '02': '#EFF1F3',
           '03': '',
           '04': '#D2D6DB',
-          '05': '#A2A6AB',
-          '06': '#797D81',
-          '07': '#4B4F54',
-          '08': '',
+          '05': '',
+          '06': '#A2A6AB',
+          '07': '#797D81',
+          '08': '#4B4F54',
           '09': '#292B2C',
           '10': '#1D1E1F',
         },
@@ -85,7 +210,7 @@ const config = {
           '05': '#7095F8',
           '06': '#577CFF',
         },
-        white: '#FFFFFF',
+
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
