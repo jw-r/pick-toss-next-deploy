@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button'
+import icons from '@/constants/icons'
 import Image from 'next/image'
 
 export default function Quiz() {
   return (
-    <main className="flex flex-col pb-[48px] lg:gap-[28px]">
+    <main className="flex flex-col lg:gap-[28px]">
       <div className="flex items-center gap-[8px]">
-        <Image src="/icons/quiz.svg" width={34.69} height={30} alt="" />
+        <Image src={icons.powerUpQuiz} width={34.69} height={30} alt="" />
         <h1 className="text-[32px] font-[500] text-gray-08">파워업 퀴즈</h1>
       </div>
 
@@ -29,13 +30,13 @@ export default function Quiz() {
 
         <div className="flex flex-col gap-[7px]">
           <div className="flex h-full w-[176px] flex-col items-center justify-between rounded-[16px] bg-white p-[15px] pt-[20px]">
-            <Image src="/icons/calendar.svg" width={53} height={53} alt="" />
+            <Image src={icons.calendar} width={53} height={53} alt="" />
             <div className="text-[16px] font-[700] text-gray-08">
               <span className="text-orange-06">25</span>일 연속으로 푸는 중!
             </div>
           </div>
           <div className="flex h-full w-[176px] flex-col items-center justify-between rounded-[16px] bg-white p-[15px] pt-[20px]">
-            <Image src="/icons/star.svg" width={45} height={43} alt="" />
+            <Image src={icons.star} width={45} height={43} alt="" />
             <div className="text-[16px] font-[700] text-gray-08">
               현재 별 <span className="text-orange-06">16</span>개
             </div>
@@ -48,7 +49,7 @@ export default function Quiz() {
           <div className="flex items-center gap-[4px]">
             <h2 className="text-[20px] font-[700]">퀴즈 만들기</h2>
             {/** TODO: Tool Tip */}
-            <Image src="/icons/tool-tip.svg" width={20} height={20} alt="" />
+            <Image src={icons.circleQuestion} width={20} height={20} alt="" />
           </div>
           <p className="text-[14px] font-[400] text-gray-06">
             원하는 문서로부터 퀴즈를 만들어보세요

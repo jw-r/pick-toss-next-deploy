@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
+import icons from '@/constants/icons'
 
 const mockData = {
   name: '픽토스',
@@ -19,14 +20,14 @@ export default function HeaderLayout() {
     <div className="sticky right-0 top-0 flex h-[60px] w-full items-center gap-11 bg-gray-01">
       <div className="flex flex-1 items-center justify-end gap-6">
         <div className="flex max-w-[360px] flex-1 items-center gap-4 rounded-full bg-gray-02 px-8 py-3">
-          <Image src="/icons/search.svg" alt="search" width={16} height={16} />
+          <Image src={icons.search} alt="search" width={16} height={16} />
           <input
             className="w-full bg-transparent focus:outline-none"
             placeholder="문서명, 퀴즈 및 문서 내용 검색"
           />
         </div>
         <button className="rounded-full p-2 hover:bg-gray-02  ">
-          <Image src="/icons/bell.svg" alt="bell" width={24} height={24} />
+          <Image src={icons.bell} alt="bell" width={24} height={24} />
         </button>
         <div className="flex items-center gap-2 rounded-full bg-[#EFF1F3] px-3 py-0.5">
           <Image src={'/icons/star.svg'} alt="" width={16} height={16} />
@@ -38,7 +39,7 @@ export default function HeaderLayout() {
           <span className="flex items-center gap-[13px] rounded-xl p-1 hover:bg-gray-02">
             <div className="size-8 rounded-full bg-orange-04" />
             <span className="text-sm text-[#818181]">{mockData.name}님</span>
-            <Image src="/icons/arrow-down.svg" alt="arrow-down" width={16} height={16} />
+            <Image src={icons.chevronDown} alt="arrow-down" width={16} height={16} />
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -61,13 +62,13 @@ export default function HeaderLayout() {
             <DropdownMenuItem>
               <div className="flex w-full justify-between text-base">
                 <div>문의하기</div>
-                <Image src="/icons/move.svg" alt="move" width={16} height={16} />
+                <Image src={icons.link} alt="move" width={16} height={16} />
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <div className="flex w-full justify-between text-base">
                 <div>정책 및 이용약관</div>
-                <Image src="/icons/move.svg" alt="move" width={16} height={16} />
+                <Image src={icons.link} alt="move" width={16} height={16} />
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { NavItemsId, profileNav } from './config'
 import { Switch } from '../ui/switch'
 import Image from 'next/image'
+import icons from '@/constants/icons'
 
 interface ProfileProps {
   trigger: ReactNode
@@ -133,7 +134,7 @@ function NotificationConfig() {
         </div>
         <div className="flex h-[64px] w-full items-center gap-[13.7px] overflow-hidden rounded-[8px] bg-blue-01 px-[11px]">
           <div className="relative h-full w-[50.32px]">
-            <Image src="/icons/mobile.svg" alt="" fill />
+            <Image src={icons.mobileApp} alt="" fill />
           </div>
           <div className="flex flex-col">
             <span className="text-[12px] font-[500] text-gray-07">

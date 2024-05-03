@@ -3,6 +3,7 @@
 import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import icons from '@/constants/icons'
 
 export default function SignIn() {
   return (
@@ -12,7 +13,7 @@ export default function SignIn() {
           className="w-full bg-[#FBE44D] text-[#3C1E1E] hover:bg-[#FBE44D]/80"
           onClick={() => signIn('kakao')}
         >
-          <Image src="/icons/kakao.svg" alt="" width={20} height={20} className="mr-[12px]" />
+          <Image src={icons.kakao} alt="" width={20} height={20} className="mr-[12px]" />
           카카오 로그인
         </Button>
       </div>
