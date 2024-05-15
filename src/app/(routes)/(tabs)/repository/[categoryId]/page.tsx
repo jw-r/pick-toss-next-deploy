@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import CategoryTag from '../components/category-tag'
-import { studyCategoryData } from '../mock-data'
+import { categories } from '../mock-data'
 import Image from 'next/image'
 import {
   DropdownMenu,
@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Switch } from '@/components/ui/switch'
 import Link from 'next/link'
 import icons from '@/constants/icons'
 
@@ -22,7 +21,7 @@ interface Props {
 
 // 임시 category fetch 함수
 const fetchCategory = (categoryId: number) => {
-  const targetData = studyCategoryData.find((data) => data.id === categoryId)
+  const targetData = categories.find((data) => data.id === categoryId)
 
   if (targetData === undefined) {
     throw new Error('category id가 잘못 되었습니다')
@@ -83,7 +82,7 @@ export default function Category({ params: { categoryId } }: Props) {
             </div>
             <div className="flex items-center gap-12">
               {/* TODO: 서버 API 데이터에 따라 구현 달라질 예정 */}
-              <div className="text-body2-regular text-gray-06">
+              {/* <div className="text-body2-regular text-gray-06">
                 {document.quizCreation === 'PREPARING' ? (
                   <div className="px-[34.5px]">문서 요약 중</div>
                 ) : (
@@ -96,7 +95,7 @@ export default function Category({ params: { categoryId } }: Props) {
                   </div>
                 )}
               </div>
-              <div className="text-body2-regular text-gray-06">{document.createdAt}</div>
+              <div className="text-body2-regular text-gray-06">{document.createdAt}</div> */}
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <div className="flex size-[25px] items-center justify-center rounded-full hover:bg-gray-02">
