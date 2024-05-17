@@ -171,8 +171,16 @@ const config = {
           '10px',
           {
             lineHeight: 'normal',
-            fontWeight: 'normal',
+            fontWeight: 'bold',
             letterSpacing: '0.02em',
+          },
+        ],
+        'tag-eng': [
+          '10px',
+          {
+            lineHeight: '150%',
+            fontWeight: 'normal',
+            letterSpacing: '0.03em',
           },
         ],
       },
