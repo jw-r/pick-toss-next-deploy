@@ -4,11 +4,12 @@ import { QuizDTO } from '@/apis/types/dto/quiz.dto'
 import QuizIntro from './quiz-intro'
 import { useEffect, useState } from 'react'
 import QuizHeader from './quiz-header'
-import MultipleOption, { optionVariants } from './multiple-option'
-import { VariantProps } from 'class-variance-authority'
 import Explanation from './explanation'
 import Question from './question'
-import MixUpOption from './mix-up-option'
+import { delay } from '@/utils/delay'
+import MultipleOptions from './multiple-options'
+import MixUpOptions from './mix-up-options'
+import { QuizProgress } from '../types'
 
 interface QuizProps {
   quizzes: QuizDTO[]
@@ -25,64 +26,52 @@ export default function Quiz({ quizzes }: QuizProps) {
     return () => clearTimeout(timer)
   }, [])
 
-  const [quizIndex, setQuizIndex] = useState(0)
-  const [selectedOrder, setSelectedOrder] = useState<number | null>(null)
-  const [selectedOX, setSelectedOX] = useState<'correct' | 'incorrect' | null>(null)
-  const [showResult, setShowResult] = useState(false)
-  const [variants, setVariants] = useState<VariantProps<typeof optionVariants>['variant'][]>([])
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [quizProgress, setQuizProgress] = useState<QuizProgress>({
+    quizIndex: 0,
+    selectedMultipleQuizAnswer: null,
+    selectedMixUpQuizAnswer: null,
+    progress: 'idle',
+  })
 
-  const curQuiz = quizzes[quizIndex]
+  const curQuiz = quizzes[quizProgress.quizIndex]
+  const isCorrect =
+    curQuiz.quizType === 'MULTIPLE_CHOICE'
+      ? curQuiz.options[quizProgress.selectedMultipleQuizAnswer!] === curQuiz.answer
+      : quizProgress.selectedMixUpQuizAnswer === curQuiz.answer
 
-  const onSelectAnswer = (answer: number | 'correct' | 'incorrect') => {
+  const onSelectAnswer = async (answer: number | 'correct' | 'incorrect') => {
     if (typeof answer === 'number') {
-      setSelectedOrder(answer)
-      setIsCorrect(curQuiz.options[answer] === curQuiz.answer)
+      setQuizProgress((prev) => ({
+        ...prev,
+        progress: 'choose',
+        selectedMultipleQuizAnswer: answer,
+      }))
     } else {
-      setSelectedOX(answer)
-      setIsCorrect(curQuiz.answer === answer)
+      setQuizProgress((prev) => ({
+        ...prev,
+        progress: 'choose',
+        selectedMixUpQuizAnswer: answer,
+      }))
     }
 
-    setTimeout(() => {
-      setShowResult(true)
-    }, 1500)
+    await delay(1500)
+
+    setQuizProgress((prev) => ({
+      ...prev,
+      progress: 'result',
+    }))
   }
 
   const next = () => {
-    if (quizIndex === quizzes.length - 1) {
+    if (quizProgress.quizIndex === quizzes.length - 1) {
       return
     }
 
-    setSelectedOrder(null)
-    setSelectedOX(null)
-    setShowResult(false)
-    setVariants([])
-    setIsCorrect(null)
-
-    setQuizIndex((prev) => prev + 1)
+    setQuizProgress((prev) => ({
+      ...prev,
+      quizIndex: prev.quizIndex + 1,
+    }))
   }
-
-  useEffect(() => {
-    if (selectedOrder == null) {
-      setVariants(Array(curQuiz.options.length).fill('idle'))
-    } else {
-      const newVariants = curQuiz.options.map((option, idx) => {
-        if (!showResult) {
-          return selectedOrder === idx ? 'choose' : 'idle'
-        } else {
-          if (curQuiz.answer === option) {
-            return 'correct'
-          }
-          if (selectedOrder === idx && curQuiz.answer !== option) {
-            return 'incorrect'
-          }
-
-          return 'disabled'
-        }
-      })
-      setVariants(newVariants)
-    }
-  }, [selectedOrder, showResult, curQuiz])
 
   return (
     <div className="pt-[12px]">
@@ -97,39 +86,23 @@ export default function Quiz({ quizzes }: QuizProps) {
             question={curQuiz.question}
           />
           {curQuiz.quizType === 'MULTIPLE_CHOICE' ? (
-            <div className="mt-[24px] flex flex-col gap-[20px] px-[20px]">
-              {curQuiz.options.map((option, idx) => (
-                <MultipleOption
-                  key={idx}
-                  option={option}
-                  onClick={() => onSelectAnswer(idx)}
-                  order={String.fromCharCode(65 + idx)}
-                  variant={variants[idx]}
-                  disabled={selectedOrder != null}
-                />
-              ))}
-            </div>
+            <MultipleOptions
+              quizProgress={quizProgress}
+              curQuiz={curQuiz}
+              onSelectAnswer={onSelectAnswer}
+              className="mt-[24px]"
+            />
           ) : (
-            <div className="mt-[40px] flex w-full justify-center gap-[10px] px-[20px] lg:gap-[24px]">
-              <MixUpOption
-                variant="correct"
-                onClick={() => onSelectAnswer('correct')}
-                disabled={selectedOX != null}
-                hidden={!selectedOX ? null : selectedOX !== 'correct'}
-                isCorrect={!showResult || !selectedOX ? null : selectedOX === curQuiz.answer}
-              />
-              <MixUpOption
-                variant="incorrect"
-                onClick={() => onSelectAnswer('incorrect')}
-                disabled={selectedOX != null}
-                hidden={!selectedOX ? null : selectedOX !== 'incorrect'}
-                isCorrect={!showResult || !selectedOX ? null : selectedOX === curQuiz.answer}
-              />
-            </div>
+            <MixUpOptions
+              quizProgress={quizProgress}
+              curQuiz={curQuiz}
+              onSelectAnswer={onSelectAnswer}
+              className="mt-[40px]"
+            />
           )}
-          {showResult ? (
+          {quizProgress.progress === 'result' ? (
             <Explanation
-              isCorrect={isCorrect!}
+              isCorrect={isCorrect}
               correctItem={
                 curQuiz.quizType === 'MULTIPLE_CHOICE'
                   ? String.fromCharCode(
