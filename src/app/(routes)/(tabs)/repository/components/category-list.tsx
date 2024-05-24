@@ -1,6 +1,5 @@
 'use client'
 
-import { Category, mockCategories } from '../mock-data'
 import Image from 'next/image'
 import CategoryItem from './category-item'
 import {
@@ -15,10 +14,22 @@ import {
 } from '@dnd-kit/core'
 import { useState } from 'react'
 import { SortableContext, arrayMove } from '@dnd-kit/sortable'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Category, getCategories } from '@/apis/fetchers/category/get-categories'
+import { useSession } from 'next-auth/react'
+import CreateCategoryModal from './create-category-modal'
 
 export default function CategoryList() {
   const [draggedItem, setDraggedItem] = useState<Category | null>(null)
-  const [categories, setCategories] = useState(mockCategories)
+
+  const { data: session } = useSession()
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () =>
+      getCategories({ accessToken: session?.user.accessToken || '' }).then((res) => res.categories),
+    enabled: !!session,
+  })
+  const queryClient = useQueryClient()
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -27,6 +38,8 @@ export default function CategoryList() {
       },
     })
   )
+
+  if (categories === undefined) return <div>loading</div>
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
@@ -39,12 +52,12 @@ export default function CategoryList() {
     const { active, over } = event
 
     if (active.id !== over?.id) {
-      setCategories((categories) => {
-        const oldIndex = categories.findIndex((category) => category.id === active.id)
-        const newIndex = categories.findIndex((category) => category.id === over?.id)
+      const oldIndex = categories.findIndex((category) => category.id === active.id)
+      const newIndex = categories.findIndex((category) => category.id === over?.id)
 
-        return arrayMove(categories, oldIndex, newIndex)
-      })
+      queryClient.setQueryData(['categories'], (prevCategories: Category[]) =>
+        arrayMove(prevCategories, oldIndex, newIndex)
+      )
     }
 
     setDraggedItem(null)
@@ -66,12 +79,16 @@ export default function CategoryList() {
             {categories.map((studyCategory) => (
               <CategoryItem key={studyCategory.id} {...studyCategory} />
             ))}
-            <button className="flex min-h-[120px] items-center justify-center gap-2 rounded-xl border-2 border-dashed text-body2-bold text-gray-08">
-              폴더 추가하기
-              <div className="rounded-full bg-gray-02 p-2">
-                <Image src="/icons/plus.svg" alt="" width={18} height={18} />
-              </div>
-            </button>
+            <CreateCategoryModal
+              trigger={
+                <button className="flex min-h-[120px] items-center justify-center gap-2 rounded-xl border-2 border-dashed text-body2-bold text-gray-08">
+                  폴더 추가하기
+                  <div className="rounded-full bg-gray-02 p-2">
+                    <Image src="/icons/plus.svg" alt="" width={18} height={18} />
+                  </div>
+                </button>
+              }
+            />
           </div>
         </SortableContext>
         <DragOverlay>{draggedItem && <CategoryItem {...draggedItem} />}</DragOverlay>
