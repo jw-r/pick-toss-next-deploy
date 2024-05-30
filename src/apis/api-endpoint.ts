@@ -91,6 +91,10 @@ export const API_ENDPOINT = {
       url: `/members/update-name`,
       method: HttpMethod.PATCH,
     }),
+    updateQuizNotification: () => ({
+      url: `/members/update-quiz-notification`,
+      method: HttpMethod.PATCH,
+    }),
   },
 
   // auth 관련 API
@@ -103,7 +107,7 @@ export const API_ENDPOINT = {
       url: `/auth/verification`,
       method: HttpMethod.POST,
     }),
-    checkVerification: () => ({
+    verifyEmailCheck: () => ({
       url: `/auth/verification/check`,
       method: HttpMethod.POST,
     }),
