@@ -37,7 +37,7 @@ export const {
         } catch (error) {
           throw new Error('Failed to get backend access token')
         }
-
+        // 회원가입 했을 때만 첫 사용자인지 알 수 있다
         try {
           const user = await getUser({
             accessToken: token.accessToken as string,

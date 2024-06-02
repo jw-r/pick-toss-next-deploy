@@ -9,8 +9,8 @@ export default async function Main() {
   const { quizSetId, type } = await getTodayQuizSetId()
 
   return (
-    <main className="flex flex-col px-[20px] pb-[40px]">
-      <PageTitle title="파워업 퀴즈" icon={icons.powerUpQuiz} />
+    <main className="flex flex-col px-[20px] pb-[40px] pt-[10px] lg:pt-[60px]">
+      <PageTitle title="파워업 퀴즈" icon={icons.powerUpQuiz} className="mb-[26px] lg:mb-[28px]" />
 
       <section className="mb-[56px] flex flex-col gap-[24px] lg:flex-row lg:gap-[10px]">
         <QuizBanner type={type} quizSetId={quizSetId} />
