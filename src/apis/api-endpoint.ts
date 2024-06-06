@@ -63,6 +63,11 @@ export const API_ENDPOINT = {
       url: `/documents/${documentId}/update-name`,
       method: HttpMethod.PATCH,
     }),
+
+    reorderDocument: () => ({
+      url: `/documents/reorder`,
+      method: HttpMethod.PATCH,
+    }),
   },
 
   keypoint: {
@@ -100,7 +105,12 @@ export const API_ENDPOINT = {
     }),
 
     updateCategory: (categoryId: number) => ({
-      url: `/categories/${categoryId}`,
+      url: `/categories/info/${categoryId}`,
+      method: HttpMethod.PATCH,
+    }),
+
+    reorderCategory: () => ({
+      url: `/categories/reorder`,
       method: HttpMethod.PATCH,
     }),
   },
