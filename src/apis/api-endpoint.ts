@@ -58,6 +58,11 @@ export const API_ENDPOINT = {
       url: `/documents/${documentId}/ai-pick`,
       method: HttpMethod.POST,
     }),
+
+    updateDocumentName: (documentId: number) => ({
+      url: `/documents/${documentId}/update-name`,
+      method: HttpMethod.PATCH,
+    }),
   },
 
   keypoint: {
@@ -69,6 +74,11 @@ export const API_ENDPOINT = {
 
   // 카테고리 관련 API
   category: {
+    getCategory: (categoryId: number) => ({
+      url: `/categories/${categoryId}`,
+      method: HttpMethod.GET,
+    }),
+
     getCategories: () => ({
       url: `/categories`,
       method: HttpMethod.GET,
@@ -82,6 +92,11 @@ export const API_ENDPOINT = {
     deleteCategory: (categoryId: number) => ({
       url: `/categories/${categoryId}`,
       method: HttpMethod.DELETE,
+    }),
+
+    updateCategory: (categoryId: number) => ({
+      url: `/categories/${categoryId}`,
+      method: HttpMethod.PATCH,
     }),
   },
 

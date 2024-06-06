@@ -26,6 +26,9 @@ import ranking from '../../public/icons/ranking.svg'
 import quizArchive from '../../public/icons/quiz-archive.svg'
 import savePick from '../../public/icons/save-pick.svg'
 import timer from '../../public/icons/timer.svg'
+import folderEmpty from '../../public/icons/folder-empty.svg'
+import noteEmpty from '../../public/icons/note-empty.svg'
+import deleteFolder from '../../public/icons/delete-folder.svg'
 
 const icons = {
   check,
@@ -54,6 +57,9 @@ const icons = {
   quizArchive,
   savePick,
   timer,
+  folderEmpty,
+  noteEmpty,
+  deleteFolder,
 }
 
 export default icons as Record<keyof typeof icons, StaticImport>
