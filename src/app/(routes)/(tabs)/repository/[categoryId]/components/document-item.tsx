@@ -10,7 +10,6 @@ import {
 import { cn } from '@/lib/utils'
 import { Document } from '@/apis/fetchers/document/get-documents-for-category'
 import { useState } from 'react'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import DeleteDocumentModal from './delete-document.modal'
 import ModifyDocumentNameModal from './modify-document-name-modal'
 import { getRelativeTime } from '@/utils/date'
@@ -23,33 +22,36 @@ interface Props extends Document {
 export default function DocumentItem({ sortOption, ...document }: Props) {
   const { id, name, status, createdAt } = document
 
-  const [dialogStatus, setDialogStatus] = useState<'modify' | 'delete' | null>(null)
+  const [modifyDialogOpen, setModifyDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
-    <Link href={`/document/${id}`}>
-      <div className="flex h-[78px] items-center justify-between rounded-lg bg-white px-[16px] py-[15px] transition duration-200 hover:drop-shadow-[0_2px_8px_rgba(0,0,0,0.1)] lg:px-[27px]">
-        <div className="mr-4 flex size-12 items-center justify-center rounded-full bg-gray-01">
-          <Image src="/icons/file.svg" alt="" width={24} height={24} />
-        </div>
-        <div className="flex flex-1 flex-col items-start justify-between gap-[4px] overflow-hidden lg:mr-[48px] lg:flex-row lg:items-center">
-          <div className="w-[230px] truncate text-body1-medium text-gray-09 lg:w-auto">{name}</div>
-          <div className="flex items-center gap-[8px] lg:gap-[48px]">
-            <div className="whitespace-nowrap text-small1-regular text-gray-06 lg:text-body2-regular">
-              마지막 수정: {getRelativeTime(createdAt)}
+    <>
+      <Link href={`/document/${id}`}>
+        <div className="flex h-[78px] items-center justify-between rounded-lg bg-white px-[16px] py-[15px] transition duration-200 hover:drop-shadow-[0_2px_8px_rgba(0,0,0,0.1)] lg:px-[27px]">
+          <div className="mr-4 flex size-12 items-center justify-center rounded-full bg-gray-01">
+            <Image src="/icons/file.svg" alt="" width={24} height={24} />
+          </div>
+          <div className="flex flex-1 flex-col items-start justify-between gap-[4px] overflow-hidden lg:mr-[48px] lg:flex-row lg:items-center">
+            <div className="w-[230px] truncate text-body1-medium text-gray-09 lg:w-auto">
+              {name}
             </div>
-            <div className="flex justify-center lg:w-[93px]">
-              <div
-                className={cn(
-                  'flex items-center h-[19px] px-[9px] rounded-[4px] text-[10px] font-medium whitespace-nowrap',
-                  pickStatus[status].style
-                )}
-              >
-                {pickStatus[status].label}
+            <div className="flex items-center gap-[8px] lg:gap-[48px]">
+              <div className="whitespace-nowrap text-small1-regular text-gray-06 lg:text-body2-regular">
+                마지막 수정: {getRelativeTime(createdAt)}
+              </div>
+              <div className="flex justify-center lg:w-[93px]">
+                <div
+                  className={cn(
+                    'flex items-center h-[19px] px-[9px] rounded-[4px] text-[10px] font-medium whitespace-nowrap',
+                    pickStatus[status].style
+                  )}
+                >
+                  {pickStatus[status].label}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <Dialog>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div className="flex size-[25px] items-center justify-center rounded-full hover:bg-gray-02">
@@ -60,40 +62,42 @@ export default function DocumentItem({ sortOption, ...document }: Props) {
               <DropdownMenuItem
                 onClick={(event) => {
                   event.stopPropagation()
-                  setDialogStatus('modify')
+                  setModifyDialogOpen(true)
                 }}
               >
-                <DialogTrigger asChild>
-                  <div className="flex gap-4">
-                    <Image src="/icons/modify-pencil.svg" alt="" width={16} height={16} />
-                    <span className="text-gray-09">이름 바꾸기</span>
-                  </div>
-                </DialogTrigger>
+                <div className="flex gap-4">
+                  <Image src="/icons/modify-pencil.svg" alt="" width={16} height={16} />
+                  <span className="text-gray-09">이름 바꾸기</span>
+                </div>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(event) => {
                   event.stopPropagation()
-                  setDialogStatus('delete')
+                  setDeleteDialogOpen(true)
                 }}
               >
-                <DialogTrigger asChild>
-                  <div className="flex gap-4">
-                    <Image src="/icons/trashcan-red.svg" alt="" width={16} height={16} />
-                    <span className="text-notice-red">노트 삭제하기</span>
-                  </div>
-                </DialogTrigger>
+                <div className="flex gap-4">
+                  <Image src="/icons/trashcan-red.svg" alt="" width={16} height={16} />
+                  <span className="text-notice-red">노트 삭제하기</span>
+                </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {dialogStatus === 'delete' && (
-            <DeleteDocumentModal sortOption={sortOption} {...document} />
-          )}
-          {dialogStatus === 'modify' && (
-            <ModifyDocumentNameModal sortOption={sortOption} {...document} />
-          )}
-        </Dialog>
-      </div>
-    </Link>
+        </div>
+      </Link>
+      <ModifyDocumentNameModal
+        sortOption={sortOption}
+        open={modifyDialogOpen}
+        onOpenChange={setModifyDialogOpen}
+        {...document}
+      />
+      <DeleteDocumentModal
+        sortOption={sortOption}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        {...document}
+      />
+    </>
   )
 }
 
