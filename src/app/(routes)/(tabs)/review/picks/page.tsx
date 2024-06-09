@@ -1,4 +1,3 @@
-import { getCategories } from '@/apis/fetchers/category/get-categories'
 import { auth } from '@/app/api/auth/[...nextauth]/auth'
 import { CommonLayout } from '@/components/common-layout'
 import { getBookmarks } from '@/apis/fetchers/key-point/get-bookmarks'
@@ -9,9 +8,6 @@ import DeleteDropdown from './components/delete-dropdown'
 
 export default async function Picks() {
   const session = await auth()
-  const { categories } = await getCategories({
-    accessToken: session?.user.accessToken || '',
-  })
   const { keyPoints } = await getBookmarks({
     accessToken: session?.user.accessToken || '',
   })
@@ -29,7 +25,7 @@ export default async function Picks() {
           {/** TODO: 폴더 별 북마크 */}
           {/* <CategorySelect categories={categories} /> */}
           <div className="flex items-center gap-[8px] text-body1-bold text-gray-09">모든 문서</div>
-          <div className="text-text-medium text-gray-06">{categories.length}개 저장됨</div>
+          <div className="text-text-medium text-gray-06">{keyPoints.length}개 저장됨</div>
         </div>
         <div className="mt-[16px] flex flex-col gap-[24px] lg:grid lg:grid-cols-2 lg:gap-[16px]">
           {keyPoints.map((keyPoint) => (
@@ -39,12 +35,12 @@ export default async function Picks() {
             >
               <div className="flex h-[48px] items-center justify-between border-b border-gray-02 px-[16px] lg:h-[56px] lg:pl-[32px]">
                 <div className="text-small1-regular text-gray-06 lg:text-body2-regular">
-                  전공 공부 {'>'}{' '}
+                  {keyPoint.category.name} {'>'}{' '}
                   <Link
                     href={`/document/${keyPoint.document.id}`}
                     className="text-blue-05 underline underline-offset-2"
                   >
-                    최근 이슈
+                    {keyPoint.document.name}
                   </Link>
                 </div>
                 <DeleteDropdown keyPointId={keyPoint.id} />
