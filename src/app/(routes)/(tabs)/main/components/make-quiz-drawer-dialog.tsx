@@ -31,9 +31,18 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { QuizType } from '@/apis/types/dto/quiz.dto'
+import { DocumentStatus } from '@/apis/types/dto/document.dto'
 
 const QUIZ_COUNT_OPTIONS = [3, 5, 10, 15, 20]
 const DEFAULT_QUIZ_COUNT = 5
+
+type SelectDocumentItem = {
+  id: number
+  name: string
+  order: number
+  documentStatus: DocumentStatus
+  checked: boolean
+}
 
 interface Props {
   categories: CategoryDTO[]
@@ -141,7 +150,6 @@ function MakeQuizDialogContent({
   categories: CategoryDTO[]
   handleCreateQuizzes: ({ documentIds, count }: { documentIds: number[]; count: number }) => void
 }) {
-  type SelectDocumentItem = { id: number; name: string; order: number; checked: boolean }
   const { data: session } = useSession()
   const userPoints = session?.user.dto.point || 0
 
@@ -153,12 +161,22 @@ function MakeQuizDialogContent({
   const {
     list: documentList,
     set: setDocumentList,
-    isAllChecked: isDocumentAllChecked,
-    checkAll: checkDocumentAll,
-    unCheckAll: unCheckDocumentAll,
     getCheckedIds: getDocumentCheckedIds,
     toggle: toggleDocumentChecked,
-  } = useCheckList([] as SelectDocumentItem[])
+    isAllCheckedWithoutIgnored: isDocumentAllCheckedWithoutIgnored,
+    checkAllWithoutIgnored: checkDocumentAllWithoutIgnored,
+    unCheckAllWithoutIgnored: unCheckDocumentAllWithoutIgnored,
+  } = useCheckList([] as SelectDocumentItem[], {
+    ignoreIds: categories.flatMap((category) =>
+      category.documents
+        .filter(
+          (document) =>
+            document.documentStatus === 'UNPROCESSED' ||
+            document.documentStatus === 'DEFAULT_DOCUMENT'
+        )
+        .map((document) => document.id)
+    ),
+  })
 
   const [documentMap, setDocumentMap] = useState<Record<CategoryDTO['id'], SelectDocumentItem[]>>(
     () => {
@@ -233,9 +251,9 @@ function MakeQuizDialogContent({
               <DropdownMenuContent className="w-[320px]">
                 <SelectCheckItems
                   items={documentList}
-                  isAllChecked={isDocumentAllChecked()}
-                  unCheckAll={unCheckDocumentAll}
-                  checkAll={checkDocumentAll}
+                  isAllChecked={isDocumentAllCheckedWithoutIgnored()}
+                  unCheckAll={unCheckDocumentAllWithoutIgnored}
+                  checkAll={checkDocumentAllWithoutIgnored}
                   toggle={toggleDocumentChecked}
                   selectType="document"
                 />
@@ -343,12 +361,22 @@ function MakeQuizDrawerContent({
   const {
     list: documentList,
     set: setDocumentList,
-    isAllChecked: isDocumentAllChecked,
-    checkAll: checkDocumentAll,
-    unCheckAll: unCheckDocumentAll,
     getCheckedIds: getDocumentCheckedIds,
     toggle: toggleDocumentChecked,
-  } = useCheckList([] as { id: number; name: string; order: number; checked: false }[])
+    isAllCheckedWithoutIgnored: isDocumentAllCheckedWithoutIgnored,
+    checkAllWithoutIgnored: checkDocumentAllWithoutIgnored,
+    unCheckAllWithoutIgnored: unCheckDocumentAllWithoutIgnored,
+  } = useCheckList([] as SelectDocumentItem[], {
+    ignoreIds: categories.flatMap((category) =>
+      category.documents
+        .filter(
+          (document) =>
+            document.documentStatus === 'UNPROCESSED' ||
+            document.documentStatus === 'DEFAULT_DOCUMENT'
+        )
+        .map((document) => document.id)
+    ),
+  })
 
   return (
     <div className="px-[20px]">
@@ -376,7 +404,7 @@ function MakeQuizDrawerContent({
                 className="cursor-pointer"
                 onClick={() => {
                   setStep('folder')
-                  unCheckDocumentAll()
+                  unCheckDocumentAllWithoutIgnored()
                 }}
               >
                 <FakeSelectTrigger
@@ -392,17 +420,23 @@ function MakeQuizDrawerContent({
                     <SelectCheckItems
                       items={step === 'folder' ? categoryList : documentList}
                       isAllChecked={
-                        step === 'folder' ? isCategoryAllChecked() : isDocumentAllChecked()
+                        step === 'folder'
+                          ? isCategoryAllChecked()
+                          : isDocumentAllCheckedWithoutIgnored()
                       }
-                      unCheckAll={step === 'folder' ? unCheckCategoryAll : unCheckDocumentAll}
-                      checkAll={step === 'folder' ? checkCategoryAll : checkDocumentAll}
+                      unCheckAll={
+                        step === 'folder' ? unCheckCategoryAll : unCheckDocumentAllWithoutIgnored
+                      }
+                      checkAll={
+                        step === 'folder' ? checkCategoryAll : checkDocumentAllWithoutIgnored
+                      }
                       toggle={step === 'folder' ? toggleCategoryChecked : toggleDocumentChecked}
                       selectType={step === 'folder' ? 'category' : 'document'}
                     />
                   }
                   init={() => {
                     unCheckCategoryAll()
-                    unCheckDocumentAll()
+                    unCheckDocumentAllWithoutIgnored()
                     setStep('folder')
                   }}
                   next={() => {
@@ -444,17 +478,23 @@ function MakeQuizDrawerContent({
                     <SelectCheckItems
                       items={step === 'folder' ? categoryList : documentList}
                       isAllChecked={
-                        step === 'folder' ? isCategoryAllChecked() : isDocumentAllChecked()
+                        step === 'folder'
+                          ? isCategoryAllChecked()
+                          : isDocumentAllCheckedWithoutIgnored()
                       }
-                      unCheckAll={step === 'folder' ? unCheckCategoryAll : unCheckDocumentAll}
-                      checkAll={step === 'folder' ? checkCategoryAll : checkDocumentAll}
+                      unCheckAll={
+                        step === 'folder' ? unCheckCategoryAll : unCheckDocumentAllWithoutIgnored
+                      }
+                      checkAll={
+                        step === 'folder' ? checkCategoryAll : checkDocumentAllWithoutIgnored
+                      }
                       toggle={step === 'folder' ? toggleCategoryChecked : toggleDocumentChecked}
                       selectType={step === 'folder' ? 'category' : 'document'}
                     />
                   }
                   init={() => {
                     unCheckCategoryAll()
-                    unCheckDocumentAll()
+                    unCheckDocumentAllWithoutIgnored()
                     setStep('folder')
                   }}
                   next={() => {
@@ -590,6 +630,7 @@ type CheckItem = {
   id: number
   name: string
   checked: boolean
+  documentStatus?: DocumentStatus
   emoji?: string
 }
 
@@ -630,7 +671,10 @@ function SelectCheckItems(props: {
 
           <div className="flex max-h-[280px] flex-col gap-[3px] overflow-auto pb-[10px]">
             {items.map((item) => (
-              <div key={item.id} className="flex justify-between gap-[12px] px-[27px] py-[9px]">
+              <div
+                key={item.id}
+                className="relative flex justify-between gap-[12px] px-[27px] py-[9px]"
+              >
                 <div className="flex gap-[16px]">
                   <Checkbox
                     id={String(item.id)}
@@ -655,6 +699,17 @@ function SelectCheckItems(props: {
                   >
                     노트 보기
                   </Link>
+                )}
+
+                {(item.documentStatus === 'UNPROCESSED' ||
+                  item.documentStatus === 'DEFAULT_DOCUMENT') && (
+                  <div className="absolute left-0 top-0 flex size-full items-center justify-center bg-gray-09/60">
+                    <div className="text-small1-bold text-white">
+                      {item.documentStatus === 'UNPROCESSED'
+                        ? '퀴즈가 생성되지 않은 문서입니다.'
+                        : '기본 문서는 선택할 수 없습니다.'}
+                    </div>
+                  </div>
                 )}
               </div>
             ))}
