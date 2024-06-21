@@ -11,6 +11,7 @@ import { TitleInput } from './components/title-input'
 import { createDocument } from '@/apis/fetchers/document/create-document'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useToast } from '@/hooks/use-toast'
 
 const VisualEditor = dynamic(() => import('./components/visual-editor'), {
   ssr: false,
@@ -20,6 +21,8 @@ const VisualEditor = dynamic(() => import('./components/visual-editor'), {
 export default function CreateDocument() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
+
   const [isLoading, setIsLoading] = useState(false)
 
   const { data: categories } = useQuery({
@@ -61,6 +64,7 @@ export default function CreateDocument() {
       },
       {
         onSuccess: (data) => {
+          toast({ description: '노트가 등록되었습니다' })
           router.push(`/document/${data.id}`)
         },
       }

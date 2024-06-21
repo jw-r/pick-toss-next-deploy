@@ -3,6 +3,7 @@
 import { API_ENDPOINT } from '@/apis/api-endpoint'
 import { updateUserName } from '@/apis/fetchers/user/update-user-name'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 import { actionRevalidatePath } from '@/lib/revalidate'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -11,6 +12,7 @@ import { ChangeEvent, useState } from 'react'
 export default function EditForm() {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
 
   const [name, setName] = useState(session?.user.dto.name || '')
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
@@ -34,6 +36,7 @@ export default function EditForm() {
     await updateUserName({ accessToken: session?.user.accessToken || '', name: name })
     await Promise.all([update(), actionRevalidatePath(API_ENDPOINT.user.getUser().url)])
 
+    toast({ description: '프로필이 변경되었습니다' })
     router.push('/profile')
   }
 

@@ -4,6 +4,7 @@ import { API_ENDPOINT } from '@/apis/api-endpoint'
 import { verifyEmail } from '@/apis/fetchers/auth/verify-email'
 import { verifyEmailCheck } from '@/apis/fetchers/auth/verify-email-check'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 import { actionRevalidatePath } from '@/lib/revalidate'
 import { useMutation } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
@@ -16,8 +17,9 @@ const codeRegex = /^[a-zA-Z0-9]{6}$/
 export default function EmailSettingForm() {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
 
-  const [emailInput, setEmailInput] = useState('')
+  const [emailInput, setEmailInput] = useState(session?.user.dto.email || '')
   const [codeInput, setCodeInput] = useState('')
 
   const {
@@ -41,6 +43,7 @@ export default function EmailSettingForm() {
       }),
     onSuccess: async () => {
       await Promise.all([update(), actionRevalidatePath(API_ENDPOINT.user.getUser().url)])
+      toast({ description: '알림 받을 이메일이 등록되었습니다' })
       router.push('/profile/notification')
     },
   })

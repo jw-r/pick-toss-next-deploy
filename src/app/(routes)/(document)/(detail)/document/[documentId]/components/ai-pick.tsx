@@ -27,6 +27,7 @@ import {
   GetKeyPointsByIdResponse,
   getKeyPointsById,
 } from '@/apis/fetchers/key-point/get-key-points'
+import { useToast } from '@/hooks/use-toast'
 
 interface Props {
   initKeyPoints: {
@@ -65,6 +66,7 @@ export function AiPick({ initKeyPoints, initStatus }: Props) {
   const session = useSession()
   const documentId = useParams().documentId as string
   const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   const {
     data: { documentStatus: status, keyPoints },
@@ -138,6 +140,13 @@ export function AiPick({ initKeyPoints, initStatus }: Props) {
       return toggleBookmark({
         ...data,
         accessToken: session.data?.user.accessToken || '',
+      })
+    },
+    onSuccess: (_, variable) => {
+      const description = variable.bookmark ? 'pick이 저장되었습니다' : 'pick이 저장 해제되었습니다'
+
+      toast({
+        description: description,
       })
     },
     onSettled: async () => {
