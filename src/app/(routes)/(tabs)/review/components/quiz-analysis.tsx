@@ -1,19 +1,17 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { HistoryChart } from './ui/history-chart'
 import { useEffect, useState } from 'react'
-import { getWeekQuizAnswerRate } from '@/apis/fetchers/quiz/get-week-quiz-answer-rate'
-import { getCategories } from '@/apis/fetchers/category/get-categories'
-import { useSession } from 'next-auth/react'
 import Loading from '@/components/loading'
 import { QuizAnalysisSummary } from './ui/quiz-analysis-summary'
 import { QuizTypeChart } from './ui/quiz-type-chart'
-import { getMonthQuizAnswerRate } from '@/apis/fetchers/quiz/get-month-quiz-answer-rate'
 import { currentMonth } from '@/utils/date'
 import { Period } from './ui/period'
 import { PeriodTypeSelector } from './ui/period-type-selector'
 import { CategorySelect } from './ui/category-select'
+import { useGetCategoriesQuery } from '@/apis/fetchers/category/get-categories/query'
+import { useGetMonthQuizAnswerRateQuery } from '@/apis/fetchers/quiz/get-month-quiz-answer-rate/query'
+import { useGetWeekQuizAnswerRateQuery } from '@/apis/fetchers/quiz/get-week-quiz-answer-rate/query'
 
 interface Period {
   type: 'week' | 'month'
@@ -21,43 +19,29 @@ interface Period {
 }
 
 export function QuizAnalysis() {
-  const { data: session } = useSession()
   const [period, setPeriod] = useState<Period>({
     type: 'week',
   })
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
 
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () =>
-      getCategories({
-        accessToken: session?.user.accessToken || '',
-      }).then((res) => res.categories),
-    enabled: !!session?.user.accessToken,
+  const { data: categories } = useGetCategoriesQuery()
+
+  const { data: weekQuizAnswerRate } = useGetWeekQuizAnswerRateQuery({
+    categoryId: selectedCategoryId!,
+    options: {
+      enabled: selectedCategoryId != null,
+    },
   })
 
-  const { data: weekQuizAnswerRate } = useQuery({
-    queryKey: ['week-quiz-answer-rate', selectedCategoryId],
-    queryFn: () =>
-      getWeekQuizAnswerRate({
-        accessToken: session?.user.accessToken || '',
-        categoryId: selectedCategoryId!,
-      }),
-    enabled: selectedCategoryId != null,
-  })
-
-  const { data: monthQuizAnswerRate } = useQuery({
-    queryKey: ['month-quiz-answer-rate', selectedCategoryId],
-    queryFn: () =>
-      getMonthQuizAnswerRate({
-        accessToken: session?.user.accessToken || '',
-        categoryId: selectedCategoryId!,
-        date: {
-          year: 2024,
-          month: currentMonth(),
-        },
-      }),
-    enabled: selectedCategoryId != null,
+  const { data: monthQuizAnswerRate } = useGetMonthQuizAnswerRateQuery({
+    categoryId: selectedCategoryId!,
+    date: {
+      year: 2024,
+      month: currentMonth(),
+    },
+    options: {
+      enabled: selectedCategoryId != null,
+    },
   })
 
   useEffect(() => {
