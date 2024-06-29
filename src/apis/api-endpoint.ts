@@ -195,4 +195,20 @@ export const API_ENDPOINT = {
       method: HttpMethod.POST,
     }),
   },
+
+  // test
+  test: {
+    changePoint: () => ({
+      url: `/test/change-point`,
+      method: HttpMethod.PATCH,
+    }),
+    changeAiPick: () => ({
+      url: `/test/change-ai-pick`,
+      method: HttpMethod.PATCH,
+    }),
+    createTodayQuiz: () => ({
+      url: `/test/create-today-quiz`,
+      method: HttpMethod.POST,
+    }),
+  },
 }

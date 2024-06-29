@@ -8,6 +8,7 @@ interface GetUserParams extends NextFetchRequestConfig {
 export interface GetUserResponse {
   name: string
   email: string
+  role: 'ROLE_USER' | 'ROLE_ADMIN'
   point: number
   continuousQuizDatesCount: number
   subscription: {

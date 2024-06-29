@@ -1,27 +1,18 @@
 'use client'
 
-import { getTodayQuizSetId } from '@/apis/fetchers/quiz/get-today-quiz-set-id/fetcher'
+import { useGetTodayQuizSetId } from '@/apis/fetchers/quiz/get-today-quiz-set-id/query'
 import { CategoryProtector } from '@/components/category-protector'
 import { SwitchCase } from '@/components/react/switch-case'
 import { Button } from '@/components/ui/button'
 import icons from '@/constants/icons'
 import { cn } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 export default function QuizBanner() {
-  const { data: session } = useSession()
   const router = useRouter()
 
-  const { data } = useQuery({
-    queryKey: ['today-quiz-set-id'],
-    queryFn: () =>
-      getTodayQuizSetId({
-        accessToken: session?.user.accessToken || '',
-      }),
-  })
+  const { data } = useGetTodayQuizSetId()
 
   const type = data?.type ?? 'NOT_READY'
   const quizSetId = data?.quizSetId ?? null
