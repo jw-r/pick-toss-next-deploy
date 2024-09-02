@@ -1,5 +1,5 @@
 import QS from 'qs'
-import { EndPoint } from '../endpoints/types'
+import { Endpoint } from '../endpoints/types'
 import { ApiResponse } from './types'
 import { ApiError } from './api-error'
 import { ServerEnv } from './server-env'
@@ -11,7 +11,7 @@ interface Config {
 }
 
 interface FetchParams {
-  endpoint: EndPoint
+  endpoint: Endpoint
   headers?: HeadersInit
   query?: object
   body?: object
@@ -20,6 +20,10 @@ interface FetchParams {
   }
 }
 
+/**
+ * @deprecated 이 클래스는 제거 될 예정입니다.
+ * 대신 actions/api-client/index.ts를 사용하세요.
+ */
 class ApiClient {
   constructor(private readonly config: Config) {}
 
