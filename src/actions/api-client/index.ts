@@ -40,5 +40,6 @@ export const apiClient = async <T>({
 
     return await unstable_cache(async () => await http<T>(config), [cacheKey], cache)()
   }
+
   return await http<T>(config)
 }
